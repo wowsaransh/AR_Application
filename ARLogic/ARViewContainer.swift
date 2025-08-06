@@ -8,22 +8,17 @@ struct ARViewContainer: UIViewRepresentable {
     @ObservedObject var viewModel: ARViewModel
     
     func makeUIView(context: Context) -> ARView {
-        let arView = ARView(frame: .zero, cameraMode: .ar, automaticallyConfigureSession: true)
-        
+        let arView = ARView(frame: .zero)
         context.coordinator.arView = arView
         arView.session.delegate = context.coordinator
         
         let config = ARWorldTrackingConfiguration()
         config.planeDetection = [.horizontal]
         config.environmentTexturing = .automatic
-        
         if ARWorldTrackingConfiguration.supportsSceneReconstruction(.mesh) {
             config.sceneReconstruction = .mesh
         }
-        
         arView.session.run(config)
-        
-        arView.environment.sceneUnderstanding.options.insert([.occlusion, .physics])
         
         let coachingOverlay = ARCoachingOverlayView()
         coachingOverlay.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -32,7 +27,6 @@ struct ARViewContainer: UIViewRepresentable {
         arView.addSubview(coachingOverlay)
         
         context.coordinator.subscribeToActionStream()
-        
         return arView
     }
     
@@ -49,50 +43,58 @@ struct ARViewContainer: UIViewRepresentable {
         
         init(viewModel: ARViewModel) {
             self.viewModel = viewModel
+            super.init()
         }
         
         func subscribeToActionStream() {
-            viewModel.actionStream
-                .sink { [weak self] action in
-                    switch action {
-                    case .place(let furniture):
-                        self?.placeObject(furniture)
-                    case .removeAll:
-                        self?.arView?.scene.anchors.removeAll()
-                    }
+            viewModel.actionStream.sink { [weak self] action in
+                switch action {
+                case .place(let furniture):
+                    print("✅ COORDINATOR: Received 'place' action for \(furniture.name).")
+                    self?.placeObject(furniture)
+                case .removeAll:
+                    self?.arView?.scene.anchors.removeAll()
                 }
-                .store(in: &cancellables)
+            }.store(in: &cancellables)
         }
         
         func placeObject(_ furniture: Furniture) {
-            guard let arView = self.arView else { return }
+            guard let arView = self.arView else {
+                print("❌ PLACE_OBJECT: ARView is nil. Cannot proceed.")
+                return
+            }
             
+            print("➡️ PLACE_OBJECT: Starting raycast from screen center...")
             let raycast = arView.raycast(from: arView.center, allowing: .estimatedPlane, alignment: .horizontal)
             
             if let firstResult = raycast.first {
+                print("✅ RAYCAST: Succeeded. Found a surface.")
                 let anchor = AnchorEntity(world: firstResult.worldTransform)
                 
+                print("➡️ MODEL: Attempting to load '\(furniture.modelName).usdz'...")
                 ModelEntity.loadModelAsync(named: furniture.modelName)
                     .receive(on: RunLoop.main)
-                    .sink(receiveCompletion: { _ in }, receiveValue: { modelEntity in
+                    .sink(receiveCompletion: { loadCompletion in
+                        if case .failure(let error) = loadCompletion {
+                            print("❌ MODEL_ERROR: Failed to load model. Error: \(error.localizedDescription)")
+                        }
+                    }, receiveValue: { modelEntity in
+                        print("✅ MODEL: Successfully loaded.")
                         modelEntity.generateCollisionShapes(recursive: true)
                         arView.installGestures([.translation, .rotation], for: modelEntity)
                         anchor.addChild(modelEntity)
                         arView.scene.addAnchor(anchor)
-                    })
-                    .store(in: &self.cancellables)
+                        print("✅✅✅ PLACEMENT COMPLETE: Object added to the scene.")
+                    }).store(in: &self.cancellables)
+            } else {
+                print("❌ RAYCAST: Failed. Could not find a surface at the moment of tapping.")
             }
         }
         
         func session(_ session: ARSession, didUpdate frame: ARFrame) {
-            DispatchQueue.main.async {
-                self.viewModel.arTrackingState = frame.camera.trackingState
-                
-                if let arView = self.arView, self.viewModel.selectedFurniture != nil {
-                    let results = arView.raycast(from: arView.center, allowing: .estimatedPlane, alignment: .horizontal)
-                    self.viewModel.placementEnabled = !results.isEmpty
-                } else {
-                    self.viewModel.placementEnabled = false
+            if self.viewModel.selectedFurniture != nil {
+                DispatchQueue.main.async {
+                    self.viewModel.placementEnabled = !self.arView!.raycast(from: self.arView!.center, allowing: .estimatedPlane, alignment: .horizontal).isEmpty
                 }
             }
         }

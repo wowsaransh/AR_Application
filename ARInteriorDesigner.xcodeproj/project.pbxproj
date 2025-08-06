@@ -7,8 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		36067C062E42FB120041426A /* HapticsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36067C052E42F92E0041426A /* HapticsManager.swift */; };
-		36067C082E42FB870041426A /* PlacementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36067C072E42FB7B0041426A /* PlacementView.swift */; };
+		36067C092E4303FA0041426A /* ball_basketball_realistic.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 36E012CF2E42E4C900B4252E /* ball_basketball_realistic.usdz */; };
+		36067C0A2E4303FA0041426A /* teapot.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 36E012D02E42E4C900B4252E /* teapot.usdz */; };
+		36067C0B2E4303FA0041426A /* toy_car.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 36E012D12E42E4C900B4252E /* toy_car.usdz */; };
 		36E012B52E42DC1300B4252E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E012B42E42DC1300B4252E /* ContentView.swift */; };
 		36E012C72E42DD6F00B4252E /* Furniture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E012C62E42DD6500B4252E /* Furniture.swift */; };
 		36E012CD2E42DDDD00B4252E /* ARViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E012CB2E42DDD200B4252E /* ARViewModel.swift */; };
@@ -16,8 +17,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		36067C052E42F92E0041426A /* HapticsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticsManager.swift; sourceTree = "<group>"; };
-		36067C072E42FB7B0041426A /* PlacementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlacementView.swift; sourceTree = "<group>"; };
 		36E012AF2E42DC1300B4252E /* ARInteriorDesigner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARInteriorDesigner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		36E012B42E42DC1300B4252E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		36E012C62E42DD6500B4252E /* Furniture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Furniture.swift; sourceTree = "<group>"; };
@@ -47,20 +46,11 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		36067C042E42F9030041426A /* Managers */ = {
-			isa = PBXGroup;
-			children = (
-				36067C052E42F92E0041426A /* HapticsManager.swift */,
-			);
-			path = Managers;
-			sourceTree = "<group>";
-		};
 		36E012A62E42DC1300B4252E = {
 			isa = PBXGroup;
 			children = (
 				36E012B12E42DC1300B4252E /* ARInteriorDesigner */,
 				36E012BD2E42DC4A00B4252E /* MVVM */,
-				36067C042E42F9030041426A /* Managers */,
 				36E012C22E42DCBB00B4252E /* Models  */,
 				36E012C12E42DC9E00B4252E /* ARLogic */,
 				36E012B02E42DC1300B4252E /* Products */,
@@ -96,7 +86,6 @@
 		36E012BF2E42DC6C00B4252E /* View */ = {
 			isa = PBXGroup;
 			children = (
-				36067C072E42FB7B0041426A /* PlacementView.swift */,
 				36E012B42E42DC1300B4252E /* ContentView.swift */,
 			);
 			path = View;
@@ -192,6 +181,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				36067C092E4303FA0041426A /* ball_basketball_realistic.usdz in Resources */,
+				36067C0A2E4303FA0041426A /* teapot.usdz in Resources */,
+				36067C0B2E4303FA0041426A /* toy_car.usdz in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -203,8 +195,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				36E012CD2E42DDDD00B4252E /* ARViewModel.swift in Sources */,
-				36067C082E42FB870041426A /* PlacementView.swift in Sources */,
-				36067C062E42FB120041426A /* HapticsManager.swift in Sources */,
 				36E012B52E42DC1300B4252E /* ContentView.swift in Sources */,
 				36E012C72E42DD6F00B4252E /* Furniture.swift in Sources */,
 				36E012D22E42E80600B4252E /* ARViewContainer.swift in Sources */,
